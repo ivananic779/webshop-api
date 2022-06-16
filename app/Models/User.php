@@ -2,43 +2,44 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use DateTime;
+use Illuminate\Support\Facades\DB;
 
-class User extends Authenticatable
+class User
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    public int $id;
+    public string $username;
+    public string $password;
+    public string $email;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    public function __construct($id = null, $username = null, $password = null, $email = null) {
+        $this->id = $id;
+        $this->username = $username;
+        $this->password = $password;
+        $this->email = $email;
+    }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     /**
+     * Public static functions
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public static function isValidToken($token) {
+        return DB::table('users')
+            ->where('token', $token)
+            //->where('token_expires', '>', DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')))
+            ->exists();
+    }
+
+    public static function createUserFromToken($token) {
+        $user = DB::table('users')
+            ->where('token', $token)
+            ->first();
+
+        if ($user) {
+            return new User($user->id, $user->username, $user->password, $user->email);
+        }
+
+        return null;
+    }
+
 }

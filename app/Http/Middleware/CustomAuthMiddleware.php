@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class CustomAuthMiddleware
 {
@@ -17,7 +17,16 @@ class CustomAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!true) {
+        // Add new header 'Authorization' to request
+        $request->headers->add(['Authorization' => 'ABCD']);
+
+        if ($request->hasHeader('Authorization')) {
+            if (User::isValidToken($request->header('Authorization'))) {
+                $request->user = User::createUserFromToken($request->header('Authorization'));
+            }
+        }
+
+        if (!$request->user) {
             return response('Unauthorized.', 401);
         }
 
