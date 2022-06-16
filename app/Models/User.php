@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\http\Request;
 
 class User
 {
@@ -23,13 +23,6 @@ class User
      * Public static functions
      */
 
-    public static function isValidToken($token) {
-        return DB::table('users')
-            ->where('token', $token)
-            //->where('token_expires', '>', DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')))
-            ->exists();
-    }
-
     public static function createUserFromToken($token) {
         $user = DB::table('users')
             ->where('token', $token)
@@ -40,6 +33,13 @@ class User
         }
 
         return null;
+    }
+
+    public static function getUsers(Request $request) {
+        $users = DB::table('users')
+            ->get();
+
+        return response()->json($users);
     }
 
 }

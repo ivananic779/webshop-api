@@ -21,9 +21,7 @@ class CustomAuthMiddleware
         $request->headers->add(['Authorization' => 'ABCD']);
 
         if ($request->hasHeader('Authorization')) {
-            if (User::isValidToken($request->header('Authorization'))) {
-                $request->user = User::createUserFromToken($request->header('Authorization'));
-            }
+            $request->user = User::createUserFromToken($request->header('Authorization'));
         }
 
         if (!$request->user) {
