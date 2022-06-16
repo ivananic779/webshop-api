@@ -19,8 +19,22 @@ use App\Models\User;
 //     return $request->user();
 // });
 
+/*
+ * User routes
+ */
+
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/users', function (Request $request) {
-        return User::getUsers($request);
+
+    /*
+    * Admin routes
+    */
+    Route::group(['middleware' => ['admin']], function () {
+        Route::get('/users', function (Request $request) {
+            return User::getUsers($request);
+        });
     });
 });
+
+/*
+ * Public routes
+ */

@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\UserRole;
 
-class CustomAuthMiddleware
+class AdminRole
 {
     /**
      * Handle an incoming request.
@@ -17,14 +17,9 @@ class CustomAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Add new header 'Authorization' to request
-        $request->headers->add(['Authorization' => 'ABCD']);
+        $role = UserRole::getUserRole($request->user->role_id);
 
-        if ($request->hasHeader('Authorization')) {
-            $request->user = User::getUserFromToken($request->header('Authorization'));
-        }
-
-        if (!$request->user) {
+        if (!$role || $role->name != 'SUPER') {
             return response('Unauthorized.', 401);
         }
 
