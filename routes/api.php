@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +20,12 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/user', function (Request $request) {
-    return "Hello";
+
+    // Test database connection
+    try {
+        $ret = DB::select('select * from users');
+    } catch (\Exception $e) {
+        die("Could not connect to the database.  Please check your configuration. error:" . $e );
+    }
+    return response($ret);
 })->middleware('auth');
