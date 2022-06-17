@@ -9,7 +9,7 @@ class UserRole
     public int $id;
     public string $name;
 
-    public function __construct($id = null, $name = null) {
+    public function __construct(int $id = null, string $name = null) {
         $this->id = $id;
         $this->name = $name;
     }

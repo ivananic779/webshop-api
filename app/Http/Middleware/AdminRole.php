@@ -17,7 +17,7 @@ class AdminRole
      */
     public function handle(Request $request, Closure $next)
     {
-        $role = UserRole::getUserRole($request->user->role_id);
+        $role = UserRole::getUserRole($request->user->role->id);
 
         if (!$role || $role->name != 'SUPER') {
             return response('Unauthorized.', 401);
