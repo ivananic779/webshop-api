@@ -19,7 +19,7 @@ class AdminRole
     {
         $role = UserRole::getUserRole($request->user->role->id);
 
-        if (!$role || $role->name != 'SUPER') {
+        if (!$role || $role->name != 'Admin') {
             return response('Unauthorized.', 401);
         }
 

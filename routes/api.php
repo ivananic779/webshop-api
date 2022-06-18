@@ -31,6 +31,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/users', function (Request $request) {
             return User::getUsers($request);
         });
+        Route::post('/users', function (Request $request) {
+            return User::createUser($request);
+        });
     });
 });
 
