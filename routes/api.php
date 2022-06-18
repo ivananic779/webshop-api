@@ -22,7 +22,6 @@ use App\Models\User;
 /*
  * User routes
  */
-
 Route::group(['middleware' => ['auth']], function () {
 
     /*

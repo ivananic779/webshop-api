@@ -21,10 +21,10 @@ class User
     }
 
     /**
-     * Protected functions
-     */
-    
-    protected static function createUserFromToken($token) {
+    * Public static functions
+    */
+
+    public static function getUserFromToken($token) {
         $user = DB::table('users')
             ->where('token', $token)
             ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
@@ -37,23 +37,21 @@ class User
         return null;
     }
 
-    protected static function fetchUsers() {
-        $users = DB::table('users')
-            ->get();
-
-        return response()->json($users);
-    }
-
-     /**
-     * Public static functions
-     */
-
-    public static function getUserFromToken($token) {
-        return self::createUserFromToken($token);
-    }
-
     public static function getUsers() {
-        return self::fetchUsers();
+        $ret = [
+            'status' => 'OK',
+            'message' => 'Success',
+            'data' => []
+        ];
+
+        try {
+            $ret['data'] = DB::table('users')->get();
+        } catch (\Exception $e) {
+            $ret['status'] = 'NOT OK';
+            $ret['message'] = $e->getMessage();
+        }
+
+        return response()->json($ret);
     }
 
 }
