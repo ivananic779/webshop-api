@@ -146,7 +146,6 @@ class User
                 $request->input('last_name'),
                 $request->input('company_name'),
             );
-            dd($user->first_name);
         } catch (\Exception $e) {
             $ret['status'] = 'NOT OK';
             $ret['message'] = $e->getMessage();
