@@ -47,7 +47,8 @@ class User
     {
         // Check if user exists
         $user = DB::table('users')
-            ->where('username', $this->username)
+            ->where('id', $this->id)
+            ->orWhere('username', $this->username)
             ->orWhere('email', $this->email)
             ->first();
 
@@ -151,9 +152,9 @@ class User
             $ret['message'] = $e->getMessage();
         }
 
-        // Try to save user to database
+        // Try to save/update user to database
         try {
-            $user->save();
+            $user->save(true);
         } catch (\Exception $e) {
             $ret['status'] = 'NOT OK';
             $ret['message'] = $e->getMessage();
