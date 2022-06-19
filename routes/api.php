@@ -36,6 +36,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/users', function (Request $request) {
             return User::createUser($request);
         });
+        Route::delete('/users/{id}', function (Request $request, $id) {
+            return User::deleteUser($request, $id);
+        });
 
         // Languages
         Route::get('/languages', function (Request $request) {

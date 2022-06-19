@@ -87,6 +87,23 @@ class User
         }
     }
 
+    protected static function delete($id): bool
+    {
+        // Check if user exists
+        $user = DB::table('users')
+            ->where('id', $id)
+            ->first();
+
+        if ($user) {
+            // If user exists, delete it
+            DB::table('users')->where('id', $id)->delete();
+
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Public static functions
      */
@@ -155,6 +172,24 @@ class User
         // Try to save/update user to database
         try {
             $user->save(true);
+        } catch (\Exception $e) {
+            $ret['status'] = 'NOT OK';
+            $ret['message'] = $e->getMessage();
+        }
+
+        return response()->json($ret);
+    }
+
+    public static function deleteUser($request, $id)
+    {
+        $ret = [
+            'status' => 'OK',
+            'message' => 'Success',
+            'data' => []
+        ];
+
+        try {
+            User::delete($id);
         } catch (\Exception $e) {
             $ret['status'] = 'NOT OK';
             $ret['message'] = $e->getMessage();
