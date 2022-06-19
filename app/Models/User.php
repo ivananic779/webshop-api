@@ -24,10 +24,10 @@ class User
         string $password,
         string $email,
         int $language_id,
-        string $first_name = null,
-        string $last_name = null,
-        string $company_name = null,
-        UserRole $role = null,
+        ?string $first_name = null,
+        ?string $last_name = null,
+        ?string $company_name = null,
+        ?UserRole $role = null,
     ) {
         $this->id = $id;
         $this->username = $username;
