@@ -17,9 +17,6 @@ class CustomAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Add new header 'Authorization' to request
-        $request->headers->add(['Authorization' => 'ABCD']);
-
         if ($request->hasHeader('Authorization')) {
             $request->user = User::getUserFromToken($request->header('Authorization'));
         }

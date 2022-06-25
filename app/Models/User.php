@@ -96,6 +96,8 @@ class User
     {
         $user = DB::table('users')
             ->where('token', $token)
+            ->where('token_expires', '>', Date('y:m:d'))
+            ->where('enabled', true)
             ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->select('users.id', 'users.username', 'users.password', 'users.language_id', 'users.first_name', 'users.last_name', 'users.company_name', 'users.email', 'roles.id as role_id', 'roles.name as role_name')
             ->first();
