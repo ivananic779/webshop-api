@@ -26,13 +26,18 @@ Route::group(['middleware' => ['auth']], function () {
     * Admin routes
     */
     Route::group(['middleware' => ['admin']], function () {
-        // Users
+        // User management
         Route::get('/users', [Controllers\UserController::class, 'getUsers']);
         Route::post('/user', [Controllers\UserController::class, 'postUser']);
         Route::delete('/user/{id}', [Controllers\UserController::class, 'deleteUser']);
+    });
 
+    /**
+     * User routes
+     */
+    Route::group(['middleware' => ['user']], function () {
         // Languages
-        Route::get('/languages', [Controllers\LanguageController::class, 'getLanguages']);
+        Route::get('/languages', [Controllers\LanguageController::class, 'getLanguages']);        
     });
 });
 

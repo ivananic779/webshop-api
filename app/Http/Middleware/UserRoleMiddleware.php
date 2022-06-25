@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class AdminRoleMiddleware
+class UserRoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class AdminRoleMiddleware
     {
         $role = $request->user->role;
 
-        if (!$role || $role->name != 'Admin') {
+        if (!$role || $role->name != 'User' || $role->name != 'Admin') {
             return response('Unauthorized.', 401);
         }
 
