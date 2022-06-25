@@ -30,10 +30,11 @@ class AuthController extends BaseController
 
         try {
             $user = $this->db::table('users')
+                ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                 ->where('username', $this->request->input('username'))
                 ->where('password', $this->request->input('password'))
                 ->where('enabled', true)
-                ->select('id')
+                ->select('users.id', 'roles.name as role_name')
                 ->first();
 
             if (!$user) {
@@ -53,6 +54,9 @@ class AuthController extends BaseController
             return $this->response::ERROR('generate_token_empty');
         }
 
-        return $this->response::OK(['token' => $token]);
+        return $this->response::OK([
+            'token' => $token,
+            'role_name' => $user->role_name
+        ]);
     }
 }
