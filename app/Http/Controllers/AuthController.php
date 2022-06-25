@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ResponseObject;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\Routing\Controller as BaseController;
@@ -27,6 +28,31 @@ class AuthController extends BaseController
             return $this->response::MISSING_INPUT();
         }
 
-        return $this->response::OK();
+        try {
+            $user = $this->db::table('users')
+                ->where('username', $this->request->input('username'))
+                ->where('password', $this->request->input('password'))
+                ->where('enabled', true)
+                ->select('id')
+                ->first();
+
+            if (!$user) {
+                return $this->response::NOT_FOUND('login_user_not_found');
+            }
+        } catch (\Exception $e) {
+            return $this->response::ERROR('login_error');
+        }
+
+        try {
+            $token = User::generateTokenForUser($user->id);
+        } catch (\Exception $e) {
+            return $this->response::ERROR('generate_token_error');
+        }
+
+        if (!$token) {
+            return $this->response::ERROR('generate_token_empty');
+        }
+
+        return $this->response::OK(['token' => $token]);
     }
 }

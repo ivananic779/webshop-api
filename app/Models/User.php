@@ -101,9 +101,42 @@ class User
             ->first();
 
         if ($user) {
-            return new User($user->id, $user->username, $user->password, $user->email, $user->language_id, $user->first_name, $user->last_name, $user->company_name, new UserRole($user->role_id, $user->role_name));
+            return new User(
+                $user->id,
+                $user->username,
+                $user->password,
+                $user->email,
+                $user->language_id,
+                $user->first_name,
+                $user->last_name,
+                $user->company_name,
+                new UserRole($user->role_id, $user->role_name)
+            );
         }
-        
+
         return null;
+    }
+
+    public static function generateTokenForUser($id): string
+    {
+        $token = null;
+        $token_expires = Date('y:m:d', strtotime('+45 days'));
+
+        $user = DB::table('users')
+            ->where('id', $id)
+            ->first();
+
+        if ($user) {
+            $token = md5(uniqid(mt_rand(), true));
+            DB::table('users')->where('id', $id)->update([
+                'token' => $token,
+                'token_created' => Date('y:m:d'),
+                'token_expires' => $token_expires
+            ]);
+        } else {
+            return null;
+        }
+
+        return $token;
     }
 }

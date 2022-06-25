@@ -39,4 +39,4 @@ Route::group(['middleware' => ['auth']], function () {
 /*
  * Public routes
  */
-Route::get('/login', [Controllers\AuthController::class, 'login']);
+Route::post('/login', [Controllers\AuthController::class, 'login']);
