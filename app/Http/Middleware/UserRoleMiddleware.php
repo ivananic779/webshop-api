@@ -18,7 +18,7 @@ class UserRoleMiddleware
     {
         $role = $request->user->role;
 
-        if (!$role || $role->name != 'User' || $role->name != 'Admin') {
+        if (!$role || ($role->name != 'User' && $role->name != 'Admin')) {
             return response('Unauthorized.', 401);
         }
 
