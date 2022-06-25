@@ -4,7 +4,7 @@ namespace App\Models;
 
 use stdClass;
 
-class Response
+class ResponseObject
 {
     public static function OK($data = null, string $msg = "request_success")
     {

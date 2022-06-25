@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,10 +17,6 @@ use App\Models\User;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 /*
  * User routes
  */
@@ -30,23 +27,16 @@ Route::group(['middleware' => ['auth']], function () {
     */
     Route::group(['middleware' => ['admin']], function () {
         // Users
-        Route::get('/users', function (Request $request) {
-            return User::getUsers($request);
-        });
-        Route::post('/users', function (Request $request) {
-            return User::createUser($request);
-        });
-        Route::delete('/users/{id}', function (Request $request, $id) {
-            return User::deleteUser($request, $id);
-        });
+        Route::get('/users', [Controllers\UserController::class, 'getUsers']);
+        Route::post('/user', [Controllers\UserController::class, 'postUser']);
+        Route::delete('/user/{id}', [Controllers\UserController::class, 'deleteUser']);
 
         // Languages
-        Route::get('/languages', function (Request $request) {
-            return Language::getLanguages($request);
-        });
+        Route::get('/languages', [Controllers\LanguageController::class, 'getLanguages']);
     });
 });
 
 /*
  * Public routes
  */
+Route::get('/login', [Controllers\AuthController::class, 'login']);

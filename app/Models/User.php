@@ -41,9 +41,10 @@ class User
     }
 
     /**
-     * Protected functions
+     * Public functions
      */
-    protected function save($edit_existing = false): bool
+
+    public function save($edit_existing = false): bool
     {
         // Check if user exists
         $user = DB::table('users')
@@ -87,23 +88,6 @@ class User
         }
     }
 
-    protected static function delete($id): bool
-    {
-        // Check if user exists
-        $user = DB::table('users')
-            ->where('id', $id)
-            ->first();
-
-        if ($user) {
-            // If user exists, delete it
-            DB::table('users')->where('id', $id)->delete();
-
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * Public static functions
      */
@@ -119,82 +103,7 @@ class User
         if ($user) {
             return new User($user->id, $user->username, $user->password, $user->email, $user->language_id, $user->first_name, $user->last_name, $user->company_name, new UserRole($user->role_id, $user->role_name));
         }
+        
         return null;
-    }
-
-    /**
-     * API routes
-     */
-
-    public static function getUsers($request)
-    {
-        $ret = [
-            'status' => 'OK',
-            'message' => 'Success',
-            'data' => []
-        ];
-
-        try {
-            $ret['data'] = DB::table('users')->get();
-        } catch (\Exception $e) {
-            $ret['status'] = 'NOT OK';
-            $ret['message'] = $e->getMessage();
-        }
-
-        return response()->json($ret);
-    }
-
-    public static function createUser($request)
-    {
-        $ret = [
-            'status' => 'OK',
-            'message' => 'Success',
-            'data' => []
-        ];
-
-        // Try to create new user
-        try {
-            $user = new User(
-                $request->input('id'),
-                $request->input('username'),
-                $request->input('password'),
-                $request->input('email'),
-                $request->input('language_id'),
-                $request->input('first_name'),
-                $request->input('last_name'),
-                $request->input('company_name'),
-            );
-        } catch (\Exception $e) {
-            $ret['status'] = 'NOT OK';
-            $ret['message'] = $e->getMessage();
-        }
-
-        // Try to save/update user to database
-        try {
-            $user->save(true);
-        } catch (\Exception $e) {
-            $ret['status'] = 'NOT OK';
-            $ret['message'] = $e->getMessage();
-        }
-
-        return response()->json($ret);
-    }
-
-    public static function deleteUser($request, $id)
-    {
-        $ret = [
-            'status' => 'OK',
-            'message' => 'Success',
-            'data' => []
-        ];
-
-        try {
-            User::delete($id);
-        } catch (\Exception $e) {
-            $ret['status'] = 'NOT OK';
-            $ret['message'] = $e->getMessage();
-        }
-
-        return response()->json($ret);
     }
 }
