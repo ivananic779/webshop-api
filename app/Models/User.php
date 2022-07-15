@@ -151,4 +151,18 @@ class User
 
         return $token;
     }
+
+    public static function changePassword(int $id, string $password): void {
+        $user = DB::table('users')
+            ->where('id', $id)
+            ->first();
+
+        if ($user) {
+            DB::table('users')
+                ->where('id', $id)
+                ->update([
+                    'password' => $password
+                ]);
+        }
+    }
 }

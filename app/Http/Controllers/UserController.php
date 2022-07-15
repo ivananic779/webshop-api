@@ -99,4 +99,19 @@ class UserController extends BaseController
 
         return $this->response::OK(null, 'user_deleted');
     }
+
+    public function changePassword()
+    {
+        // Try to create new user
+        try {
+            User::changePassword(
+                id:         $this->request->input('id'),
+                password:   $this->request->input('password'),
+            );
+        } catch (\Exception $e) {
+            return $this->response::ERROR();
+        }
+
+        return $this->response::OK(null, "Lozinka promjenjena");
+    }
 }

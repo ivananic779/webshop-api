@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/users', [Controllers\UserController::class, 'getUsers']);
         Route::post('/user', [Controllers\UserController::class, 'postUser']);
         Route::delete('/user/{id}', [Controllers\UserController::class, 'deleteUser']);
+        Route::post('/user/change_password', [Controllers\UserController::class, 'changePassword']);
     });
 
     /**
