@@ -28,7 +28,21 @@ class UserController extends BaseController
         $data = [];
 
         try {
-            $data = DB::table('users')->get();
+            $data = DB::table('users')
+                ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                ->get(
+                    array(
+                        'users.id', 
+                        'users.username', 
+                        'users.email', 
+                        'users.role_id', 
+                        'users.first_name', 
+                        'users.last_name', 
+                        'users.company_name',
+                        'roles.name as role_name',
+                        'roles.description as role_description'
+                    )
+                );
         } catch (\Exception $e) {
             return $this->response::ERROR();
         }
@@ -41,14 +55,14 @@ class UserController extends BaseController
         // Try to create new user
         try {
             $user = new User(
-                $this->request->input('id'),
-                $this->request->input('username'),
-                $this->request->input('password'),
-                $this->request->input('email'),
-                $this->request->input('language_id'),
-                $this->request->input('first_name'),
-                $this->request->input('last_name'),
-                $this->request->input('company_name'),
+                id:             $this->request->input('id'),
+                username:       $this->request->input('username'),
+                email:          $this->request->input('email'),
+                language_id:    $this->request->input('language_id'),
+                password:       $this->request->input('password'),
+                first_name:     $this->request->input('first_name'),
+                last_name:      $this->request->input('last_name'),
+                company_name:   $this->request->input('company_name'),
             );
         } catch (\Exception $e) {
             return $this->response::ERROR();

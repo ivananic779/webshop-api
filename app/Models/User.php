@@ -8,9 +8,9 @@ class User
 {
     public int $id;
     public string $username;
-    public string $password;
     public string $email;
     public int $language_id;
+    public ?string $password;
     public ?string $first_name;
     public ?string $last_name;
     public ?string $company_name;
@@ -21,9 +21,9 @@ class User
     public function __construct(
         int $id,
         string $username,
-        string $password,
         string $email,
-        int $language_id,
+        int $language_id = 1,
+        ?string $password = null,
         ?string $first_name = null,
         ?string $last_name = null,
         ?string $company_name = null,
@@ -31,9 +31,9 @@ class User
     ) {
         $this->id = $id;
         $this->username = $username;
-        $this->password = $password;
         $this->email = $email;
         $this->language_id = $language_id;
+        $this->password = $password;
         $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->company_name = $company_name;
@@ -58,12 +58,11 @@ class User
                 // If user exists and we're editing, update the user
                 DB::table('users')->where('id', $this->id)->update([
                     'username' => $this->username,
-                    'password' => $this->password,
                     'email' => $this->email,
                     'language_id' => $this->language_id,
-                    'first_name' => $this->first_name,
-                    'last_name' => $this->last_name,
-                    'company_name' => $this->company_name,
+                    'first_name' => $this->first_name ?? "",
+                    'last_name' => $this->last_name ?? "",
+                    'company_name' => $this->company_name ?? "",
                 ]);
 
                 return true;
@@ -77,10 +76,9 @@ class User
                 'password' => $this->password,
                 'email' => $this->email,
                 'language_id' => $this->language_id,
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
-                'company_name' => $this->company_name,
-                'language_id' => $this->language_id,
+                'first_name' => $this->first_name ?? "",
+                'last_name' => $this->last_name ?? "",
+                'company_name' => $this->company_name ?? "",
                 'role_id' => $this->role_id,
             ]);
 
@@ -99,20 +97,32 @@ class User
             ->where('token_expires', '>', Date('y:m:d'))
             ->where('enabled', true)
             ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
-            ->select('users.id', 'users.username', 'users.password', 'users.language_id', 'users.first_name', 'users.last_name', 'users.company_name', 'users.email', 'roles.id as role_id', 'roles.name as role_name')
-            ->first();
+            ->first(
+                array(
+                    'users.id', 
+                    'users.username', 
+                    'users.password', 
+                    'users.language_id', 
+                    'users.first_name', 
+                    'users.last_name', 
+                    'users.company_name', 
+                    'users.email', 
+                    'roles.id as role_id', 
+                    'roles.name as role_name'
+                )
+            );
 
         if ($user) {
             return new User(
-                $user->id,
-                $user->username,
-                $user->password,
-                $user->email,
-                $user->language_id,
-                $user->first_name,
-                $user->last_name,
-                $user->company_name,
-                new UserRole($user->role_id, $user->role_name)
+                id:             $user->id,
+                username:       $user->username,
+                email:          $user->email,
+                language_id:    $user->language_id,
+                password:       $user->password,
+                first_name:     $user->first_name,
+                last_name:      $user->last_name,
+                company_name:   $user->company_name,
+                role:           new UserRole($user->role_id, $user->role_name)
             );
         }
 
