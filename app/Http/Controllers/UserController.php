@@ -29,6 +29,7 @@ class UserController extends BaseController
 
         try {
             $data = DB::table('users')
+                ->where('enabled', '=', true)
                 ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                 ->get(
                     array(
@@ -70,7 +71,7 @@ class UserController extends BaseController
 
         // Try to save/update user to database
         try {
-            if (!$user->save(true)) {
+            if (!$user->save(false)) {
                 return $this->response::ERROR("user_not_saved_false");
             }
         } catch (\Exception $e) {
@@ -89,7 +90,11 @@ class UserController extends BaseController
 
             if ($user) {
                 // If user exists, delete it
-                $this->db::table('users')->where('id', $this->request->id)->delete();
+                $this->db::table('users')
+                    ->where('id', $this->request->id)
+                    ->update([
+                        'enabled' => false
+                    ]);
             } else {
                 return $this->response::ERROR('user_not_deleted_no_exists');
             }
